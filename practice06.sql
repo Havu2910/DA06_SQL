@@ -58,3 +58,47 @@ where event_date between '07/01/2022' and '07/31/2022'
 group by month
 
 -- bai tap 6
+SELECT DATE_FORMAT(trans_date, '%Y-%m') AS month, country,
+COUNT(*) AS trans_count,
+CASE 
+    WHEN state = 'approved' THEN 1 ELSE 0 END AS approved_count,
+SUM(amount) AS trans_total_amount,
+SUM(CASE 
+      WHEN state = 'approved' THEN amount ELSE 0 END) AS approved_total_amount
+FROM Transactions
+GROUP BY DATE_FORMAT(trans_date, '%Y-%m'), country
+ORDER BY month,country
+
+-- bai tap 7
+SELECT product_id, year AS first_year, quantity,price
+FROM Sales
+WHERE (product_id, year) IN (SELECT product_id, MIN(year) AS first_year
+FROM Sales
+GROUP BY product_id)
+
+-- bai tap 8
+select customer_id
+from customer
+group by customer_id
+having count(distinct product_key ) = (select count(*) from product)
+
+-- bai tap 9
+select employee_id
+from Employees
+where salary < 300000
+and manager_id not in ( select employee_id from Employees)
+order by employee_id
+
+-- bai tap 10
+
+-- bai tap 11
+
+-- bai tap 12
+WITH cte1 AS (
+SELECT requester_id, accepter_id FROM RequestAccepted
+UNION
+SELECT accepter_id, requester_id FROM RequestAccepted)
+SELECT requester_id AS id, COUNT(accepter_id) AS num
+FROM cte1
+GROUP BY accepter_id
+LIMIT 1
