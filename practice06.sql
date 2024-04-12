@@ -92,7 +92,30 @@ order by employee_id
 -- bai tap 10
 
 -- bai tap 11
+with cte1 as 
+(select b.name
+from users as b
+join MovieRating as c
+on c.user_id = b.user_id
+group by c.user_id
+order by count(*) desc, name
+limit 1),
+cte2 as 
+(select a.title
+from Movies as a
+join MovieRating as c
+on c.movie_id = a.movie_id
+where left(created_at,7) = '2020-02'
+group by c.movie_id
+order by avg(rating) desc, title
+limit 1)
 
+select cte1.name as results
+from cte1
+union all
+select cte2.title as results
+from cte2
+    
 -- bai tap 12
 WITH cte1 AS (
 SELECT requester_id, accepter_id FROM RequestAccepted
